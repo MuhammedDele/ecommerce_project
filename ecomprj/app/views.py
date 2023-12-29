@@ -1,9 +1,11 @@
 from django.db.models import Count
+from django.http import JsonResponse
 from django.shortcuts import render,redirect
 from django.views import View
 from .forms import CustomerRegistrationForm,CustomerProfileForm
-from .models import Product,Customer
+from .models import Product,Customer,Cart
 from django.contrib import messages
+from django.db.models import Q
 # Create your views here.
 def home(request):
     return render(request,"app/home.html")
@@ -88,3 +90,97 @@ class updateAdress(View):
         else:
             messages.warning(request,"Please correct the errors.")
         return redirect('address')
+    
+def add_to_cart(request):
+    user = request.user
+    product_id = request.GET.get('prod_id')
+    product = Product.objects.get(id = product_id)
+    Cart(user=user,product=product).save() #to save product to cart
+    return redirect("/cart")
+
+def show_cart(request):
+    user = request.user
+    cart = Cart.objects.filter(user=user)
+    amount=0
+    for p in cart:
+        value = p.quantity * p.product.discount_price
+        amount = amount + value
+    totalamount = amount + 10    
+    return render(request,'app/addcart.html',locals())
+
+class checkout(View):
+    def get(self,request):
+        user = request.user
+        add = Customer.objects.filter(user=user)
+        cart_items = Cart.objects.filter(user=user)
+        famount=0
+        for p in cart_items:
+            value= p.quantity * p.product.discount_price
+            famount = famount + value
+            totalamount = famount + 10
+
+        return render(request,'app/checkout.html',locals())
+
+def plus_cart(request):
+    if request.method == 'GET':
+        prod_id = request.GET['prod_id']
+        c = Cart.objects.filter(product = prod_id,user=request.user).first()# apply multiple conditions
+        c.quantity+=1
+        c.save()
+        user = request.user
+        cart = Cart.objects.filter(user=user)
+        amount=0
+        for p in cart:
+            value = p.quantity * p.product.discount_price
+            amount = amount + value
+        totalamount = amount + 10 
+        data ={
+            'quantity':c.quantity,
+            'amount':amount,
+            'totalamount':totalamount
+
+        }
+        return JsonResponse(data)
+
+def minus_cart(request):
+    if request.method == 'GET':
+        prod_id = request.GET['prod_id']
+        c = Cart.objects.filter(product = prod_id,user=request.user).first()# apply multiple conditions
+        c.quantity-=1
+        c.save()
+        user = request.user
+        cart = Cart.objects.filter(user=user)
+        amount=0
+        for p in cart:
+            value = p.quantity * p.product.discount_price
+            amount = amount + value
+        totalamount = amount + 10 
+        data ={
+            'quantity':c.quantity,
+            'amount':amount,
+            'totalamount':totalamount
+
+        }
+        return JsonResponse(data)
+    
+def remove_cart(request):
+    if request.method == 'GET':
+        prod_id = request.GET['prod_id']
+        c = Cart.objects.filter(product = prod_id,user=request.user).first()# apply multiple conditions
+        c.quantity+=1
+        c.delete()
+        user = request.user
+        cart = Cart.objects.filter(user=user)
+        amount=0
+        for p in cart:
+            value = p.quantity * p.product.discount_price
+            amount = amount + value
+        totalamount = amount + 10 
+        data ={
+            'quantity':c.quantity,
+            'amount':amount,
+            'totalamount':totalamount
+
+        }
+        return JsonResponse(data)
+
