@@ -3,9 +3,20 @@ from django.contrib.auth.models import User
 # Create your models here.
 
 CATEGORY_CHOICES=(
-    ('CR','Crud'),
-    ('ML','Milk'),
-    ('LS','Lassi')
+    ('IC','Ip Camera'),
+    ('BC','BNC Camera'),
+    ('WC','Wireless Camera'),
+    ('WI','Wifi Internet'),
+    ('AI','ADSL Internet'),
+    ('VI','VDSL INTERNET'),
+)
+STATUS_CHOICES=(
+    ("Accepted","Accepted"),
+    ("Delivered","Delivered"),
+    ("Cancel",'Cancel'),
+    ("On The Way","On The Way"),
+    ("Packed","Packed"),
+
 )
 class Product(models.Model):
     title = models.CharField(max_length=100)
@@ -36,3 +47,18 @@ class Cart(models.Model):
     @property
     def total_cost(self):
         return self.quantity * self.product.discount_price
+    
+class OrderPlaced(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    customer = models.ForeignKey(Customer,on_delete=models.CASCADE)
+    product = models.ForeignKey(Product,on_delete=models.CASCADE)
+    quantity = models.PositiveBigIntegerField(default=1)
+    order_date = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=50,choices=STATUS_CHOICES,default='Pending')
+    @property
+    def total_cost(self):
+        return self.quantity * self.product.discount_price
+    
+class Whishlist(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    product = models.ForeignKey(Product,on_delete=models.CASCADE)

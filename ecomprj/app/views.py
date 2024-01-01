@@ -3,36 +3,80 @@ from django.http import JsonResponse
 from django.shortcuts import render,redirect
 from django.views import View
 from .forms import CustomerRegistrationForm,CustomerProfileForm
-from .models import Product,Customer,Cart
+from .models import Product,Customer,Cart, OrderPlaced, Whishlist
 from django.contrib import messages
 from django.db.models import Q
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+
 # Create your views here.
+
 def home(request):
-    return render(request,"app/home.html")
+    totalitem=0
+    wishitem=0
+    if request.user.is_authenticated:
+        totalitem = len(Cart.objects.filter(user=request.user))
+        wishitem = len(Whishlist.objects.filter(user=request.user))
+    return render(request,"app/home.html",locals())
+
 def about(request):
-    return render(request,"app/about.html")
+    totalitem=0
+    wishitem=0
+    if request.user.is_authenticated:
+        totalitem = len(Cart.objects.filter(user=request.user))
+        wishitem = len(Whishlist.objects.filter(user=request.user))
+    return render(request,"app/about.html",locals())
+
 def contact(request):
-    return render(request,"app/contact.html")
+    totalitem=0
+    wishitem=0
+    if request.user.is_authenticated:
+        totalitem = len(Cart.objects.filter(user=request.user))
+        wishitem = len(Whishlist.objects.filter(user=request.user))
+    return render(request,"app/contact.html",locals())
 
 class CategoryView(View):
     def get(self,request,val):
+        totalitem=0
+        wishitem=0
+        if request.user.is_authenticated:
+            totalitem = len(Cart.objects.filter(user=request.user))
+            wishitem = len(Whishlist.objects.filter(user=request.user))
         product = Product.objects.filter(category=val)
         title= Product.objects.filter(category=val).values('title')
         return render(request,"app/category.html",locals())
     
 class CategoryTitle(View):
     def get(self, request, val):
+        totalitem=0
+        wishitem=0
+        if request.user.is_authenticated:
+            totalitem = len(Cart.objects.filter(user=request.user))
+            wishitem = len(Whishlist.objects.filter(user=request.user))
         product = Product.objects.filter(title=val)
         title = Product.objects.filter(category=product[0].category).values('title')
         return render(request,"app/category.html",locals())
     
 class ProductDetails(View):
     def get(self,request,pk):
+
         product = Product.objects.get(pk=pk) #beacuse we only need one product
+        wishlist = Whishlist.objects.filter( user = request.user.id, product=product).first()
+
+        totalitem=0
+        wishitem=0
+        if request.user.is_authenticated:
+            totalitem = len(Cart.objects.filter(user=request.user))
+            wishitem = len(Whishlist.objects.filter(user=request.user))
         return render(request,"app/productdetail.html",locals())
     
 class customerRegistrationView(View):
     def get(self,request):
+        totalitem=0
+        wishitem=0
+        if request.user.is_authenticated:
+            totalitem = len(Cart.objects.filter(user=request.user))
+            wishitem = len(Whishlist.objects.filter(user=request.user))
         form = CustomerRegistrationForm()
         return render(request,'app/customerregistration.html',locals())
     def post(self,request):
@@ -40,12 +84,18 @@ class customerRegistrationView(View):
         if form.is_valid():
             form.save()
             messages.success(request,"Congratulation! User Register Successfully")
+            return redirect("login")
         else:
             messages.warning(request,"Error! Please Check Your Input Data")
         return render(request,'app/customerregistration.html',locals())
-    
+@method_decorator(login_required,name='dispatch')   
 class profileView(View):
     def get(self,request):
+        totalitem=0
+        wishitem=0
+        if request.user.is_authenticated:
+            totalitem = len(Cart.objects.filter(user=request.user))
+            wishitem = len(Whishlist.objects.filter(user=request.user))
         form = CustomerProfileForm()
         return render(request, 'app/profile.html',locals())
     def post(self,request):
@@ -64,15 +114,25 @@ class profileView(View):
         else:
             messages.warning(request,"Please correct the errors.")
         return render(request, 'app/profile.html',locals())
-    
+@login_required    
 def address(request):
     address = Customer.objects.filter(user=request.user) 
+    totalitem=0
+    wishitem=0
+    if request.user.is_authenticated:
+        totalitem = len(Cart.objects.filter(user=request.user))
+        wishitem = len(Whishlist.objects.filter(user=request.user))
     return render(request, 'app/address.html',locals())
-
+@method_decorator(login_required,name='dispatch') 
 class updateAdress(View):
     def get(self,request,pk):
         adr = Customer.objects.get(pk=pk)
         form = CustomerProfileForm(instance=adr)
+        totalitem=0
+        wishitem=0
+        if request.user.is_authenticated:
+            totalitem = len(Cart.objects.filter(user=request.user))
+            wishitem = len(Whishlist.objects.filter(user=request.user))
         return render(request, 'app/updateAddress.html',locals())
     def post(self,request,pk):
         form = CustomerProfileForm(request.POST)
@@ -87,17 +147,18 @@ class updateAdress(View):
             add.zipcode = form.cleaned_data['zipcode']
             add.save()
             messages.success(request,"Profile Updated successfully!")
+            
         else:
             messages.warning(request,"Please correct the errors.")
         return redirect('address')
-    
+@login_required    
 def add_to_cart(request):
     user = request.user
     product_id = request.GET.get('prod_id')
     product = Product.objects.get(id = product_id)
     Cart(user=user,product=product).save() #to save product to cart
     return redirect("/cart")
-
+@login_required
 def show_cart(request):
     user = request.user
     cart = Cart.objects.filter(user=user)
@@ -105,11 +166,19 @@ def show_cart(request):
     for p in cart:
         value = p.quantity * p.product.discount_price
         amount = amount + value
-    totalamount = amount + 10    
+    totalamount = amount + 10
+    totalitem=0
+    wishitem=0
+    if request.user.is_authenticated:
+        totalitem = len(Cart.objects.filter(user=request.user))  
+        wishitem = len(Whishlist.objects.filter(user=request.user))  
     return render(request,'app/addcart.html',locals())
-
+@method_decorator(login_required,name='dispatch') 
 class checkout(View):
     def get(self,request):
+        totalitem=0
+        if request.user.is_authenticated:
+            totalitem = len(Cart.objects.filter(user=request.user))
         user = request.user
         add = Customer.objects.filter(user=user)
         cart_items = Cart.objects.filter(user=user)
@@ -120,7 +189,23 @@ class checkout(View):
             totalamount = famount + 10
 
         return render(request,'app/checkout.html',locals())
+    def post(self,request):
+        user = request.user
+        cart_items = Cart.objects.filter(user=user)
+        # customer=Customer.objects.filter(user=user)
+        
+        for cart_item in cart_items:
+            customer = Customer.objects.filter(user=user).first()
+            OrderPlaced.objects.create(
+                user=user,
+                customer=customer,
+                product = cart_item.product,
+                quantity = cart_item.quantity,
 
+            )
+            cart_item.delete()
+        return redirect('orders')
+@login_required
 def plus_cart(request):
     if request.method == 'GET':
         prod_id = request.GET['prod_id']
@@ -141,7 +226,7 @@ def plus_cart(request):
 
         }
         return JsonResponse(data)
-
+@login_required
 def minus_cart(request):
     if request.method == 'GET':
         prod_id = request.GET['prod_id']
@@ -162,7 +247,7 @@ def minus_cart(request):
 
         }
         return JsonResponse(data)
-    
+@login_required    
 def remove_cart(request):
     if request.method == 'GET':
         prod_id = request.GET['prod_id']
@@ -183,4 +268,57 @@ def remove_cart(request):
 
         }
         return JsonResponse(data)
+    
 
+@login_required
+def orders(request):
+    totalitem=0
+    wishitem=0
+    if request.user.is_authenticated:
+        totalitem = len(Cart.objects.filter(user=request.user))
+        wishitem = len(Whishlist.objects.filter(user=request.user))
+    order_placed = OrderPlaced.objects.filter(user=request.user)
+    return render(request,'app/orders.html',locals())
+@login_required
+def plus_wishlist(request):
+    if request.method == 'GET':
+        prod_id = request.GET.get('prod_id')
+        product = Product.objects.get(id=prod_id)
+        user = request.user
+        Whishlist(user=user, product=product).save()
+        data = {
+            'message': 'Wishlist added successfully'
+        }
+        return JsonResponse(data)
+@login_required
+def minus_wishlist(request):
+    if request.method == 'GET':
+        prod_id = request.GET.get('prod_id')
+        product = Product.objects.get(id=prod_id)
+        user = request.user
+        Whishlist.objects.filter(user=user, product=product).delete()
+        data = {
+            'message': 'Wishlist removed successfully'
+        }
+        return JsonResponse(data)
+
+    
+def search(request):
+    query = request.GET['search']
+    totalitem=0
+    wishitem=0
+    if request.user.is_authenticated:
+        totalitem = len(Cart.objects.filter(user=request.user))
+        wishitem = len(Whishlist.objects.filter(user=request.user))
+    product = Product.objects.filter(title__icontains=query)
+    return render(request,"app/search.html",locals())
+@login_required
+def show_wishlist(request):
+    user = request.user
+    totalitem=0
+    wishitem=0
+    if request.user.is_authenticated:
+        totalitem = len(Cart.objects.filter(user=request.user))
+        wishitem = len(Whishlist.objects.filter(user=request.user))
+    product = Whishlist.objects.filter(user=user)
+    return render(request,'app/wishlist.html',locals())
