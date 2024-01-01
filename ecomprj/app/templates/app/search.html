@@ -12,7 +12,7 @@
                 <div class="col-sm-4 text-center mb-4 hover-shadow">
                     <a href="{% url 'product-detail' prod.id %}" class="btn">
                         <div>
-                            <img src="{{ prod.product_image.url }}" width="300px" height="200px" />
+                            <img src="{{ prod.product_image.url }}" width="300px" height="200px" style="height: 200px; object-fit: contain;"/>
                             <div class="fw-bold">{{ prod.title }}</div>
                             <div class="fw-bold text-danger">
                                 Usd.$ {{ prod.discounted_price }} /-
