@@ -16,18 +16,18 @@
             <div class="col-sm-9">
                 <div class="row">
                     {% for prod in product %}
-                        <div class="col-md-4"> <!-- Added a missing opening div tag -->
+                        <div class="col-md-4">
                             <a href="{% url 'product-detail' prod.id %}" class="btn">
                                 <div>
-                                    <img src="{{ prod.product_image.url }}" width="300px" height="200px" />
+                                    <img src="{{ prod.product_image.url }}" class="img-fluid" alt="{{ prod.title }}">
                                     <div class="fw-bold">{{ prod.title }}</div>
                                     <div class="fw-bold text-danger">
-                                        Usd.{{ prod.discount_price }}/- 
+                                        Usd.${{ prod.discount_price }}/- 
                                         <small class="fw-light text-decoration-line-through">{{ prod.selling_price }}</small>
                                     </div>
                                 </div>
                             </a>
-                        </div> <!-- Closed the div for each product -->
+                        </div>
                     {% endfor %}
                 </div>
             </div>

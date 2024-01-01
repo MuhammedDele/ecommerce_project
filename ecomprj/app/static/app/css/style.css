@@ -96,3 +96,7 @@
     right: -8px;
     font-size: 0.8em;
 }
+.image {
+    max-width: 100%;
+    height: auto;
+}
