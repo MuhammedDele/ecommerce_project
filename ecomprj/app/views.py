@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.contrib.auth.models import User
 
 # Create your views here.
 
@@ -70,24 +71,31 @@ class ProductDetails(View):
             wishitem = len(Whishlist.objects.filter(user=request.user))
         return render(request,"app/productdetail.html",locals())
     
-class customerRegistrationView(View):
-    def get(self,request):
-        totalitem=0
-        wishitem=0
+class CustomerRegistrationView(View):
+    def get(self, request):
+        totalitem = 0
+        wishitem = 0
         if request.user.is_authenticated:
             totalitem = len(Cart.objects.filter(user=request.user))
             wishitem = len(Whishlist.objects.filter(user=request.user))
         form = CustomerRegistrationForm()
-        return render(request,'app/customerregistration.html',locals())
-    def post(self,request):
-        form= CustomerRegistrationForm(request.POST)
+        return render(request, 'app/customerregistration.html', locals())
+
+    def post(self, request):
+        form = CustomerRegistrationForm(request.POST)
         if form.is_valid():
+            username = form.cleaned_data['username']
+            email = form.cleaned_data['email']
+            if User.objects.filter(email=email).exists():
+                messages.warning(request, "Error! This email is already in use. Please use a different email.")
+                return render(request, 'app/customerregistration.html', {'form': form})
             form.save()
-            messages.success(request,"Congratulation! User Register Successfully")
+            messages.success(request, "Congratulation! User registered successfully")
             return redirect("login")
         else:
-            messages.warning(request,"Error! Please Check Your Input Data")
-        return render(request,'app/customerregistration.html',locals())
+            messages.warning(request, "Error! Please check your input data")
+        return render(request, 'app/customerregistration.html', {'form': form})
+    
 @method_decorator(login_required,name='dispatch')   
 class profileView(View):
     def get(self,request):

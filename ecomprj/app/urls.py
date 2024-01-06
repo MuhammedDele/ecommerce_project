@@ -32,7 +32,7 @@ urlpatterns = [
 
 
     #login authentication
-    path("registeration",views.customerRegistrationView.as_view(), name="customerregistration"),
+    path("registeration",views.CustomerRegistrationView.as_view(), name="customerregistration"),
     path('accounts/login/',auth_view.LoginView.as_view(template_name='app/login.html',authentication_form=LoginForm),name='login'),
 
     path('passwordchange/', auth_view.PasswordChangeView.as_view(template_name='app/changepassword.html',
