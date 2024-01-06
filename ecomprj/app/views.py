@@ -1,6 +1,6 @@
 from django.db.models import Count
 from django.http import JsonResponse
-from django.shortcuts import render,redirect
+from django.shortcuts import get_object_or_404, render,redirect
 from django.views import View
 from .forms import CustomerRegistrationForm,CustomerProfileForm
 from .models import Product,Customer,Cart, OrderPlaced, Whishlist
@@ -99,6 +99,11 @@ class profileView(View):
         form = CustomerProfileForm()
         return render(request, 'app/profile.html',locals())
     def post(self,request):
+        totalitem=0
+        wishitem=0
+        if request.user.is_authenticated:
+            totalitem = len(Cart.objects.filter(user=request.user))
+            wishitem = len(Whishlist.objects.filter(user=request.user))
         form = CustomerProfileForm(request.POST)
         if form.is_valid():
             user = request.user
@@ -151,6 +156,20 @@ class updateAdress(View):
         else:
             messages.warning(request,"Please correct the errors.")
         return redirect('address')
+    
+@method_decorator(login_required, name='dispatch')
+class deleteAddress(View):
+    def post(self, request, pk):
+        totalitem=0
+        wishitem=0
+        if request.user.is_authenticated:
+            totalitem = len(Cart.objects.filter(user=request.user))
+            wishitem = len(Whishlist.objects.filter(user=request.user))
+        address = get_object_or_404(Customer, pk=pk, user=request.user)
+        if request.method == 'POST':
+            address.delete()
+        return redirect('address')
+
 @login_required    
 def add_to_cart(request):
     user = request.user
