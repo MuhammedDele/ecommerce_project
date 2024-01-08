@@ -12,12 +12,15 @@
     <link rel="stylesheet" href="{% static 'app/css/owl.carousel.min.css' %}">
     <link rel="stylesheet" href="{% static 'app/css/style.css' %}">
     <link rel="stylesheet" href="{% static 'app/css/all.min.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
   </head>
     <title>Dana Telecome | {% block title %}{% endblock title %}</title>
 </head>
-<body>
-  <nav class="navbar navbar-expand-lg " style="background-color: rgb(40, 35, 105);">
+<body class="d-flex flex-column min-vh-100">
+  <nav class="navbar navbar-expand-lg " style="background-color: #00004e;">
     <div class="container-fluid">
+
       <a class="navbar-brand" href="/">
         <img src="{% static 'app/images/logo-danatelecom.png' %}" alt=""  style="height: 50px; object-fit: contain;">
       </a>
@@ -33,7 +36,7 @@
         </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Products
+            Categories
           </a>
           <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="{% url 'category' 'IC'%}">IP Camera</a></li>
@@ -59,17 +62,21 @@
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            {{request.user}}
+          {{request.user}}
           </a>
           {% if request.user.is_authenticated %}
           <ul class="dropdown-menu" aria-labelledby="profileDropdown">
             <li><a class="dropdown-item" href="{% url 'profile'%}">Profile</a></li>
             <li><a class="dropdown-item" href="{% url 'orders'%}">Orders</a></li>
             <li><a class="dropdown-item" href="{% url 'passwordchange'%}">Change Password</a></li>
-            <li><form  method="post" action="{% url 'logout' %}">
-              {% csrf_token %}
-              <button class="btn btn-danger" type="submit">logout</button>
-          </form></li>
+            <li>
+              <form method="post" action="{% url 'logout' %}" class="d-flex justify-content-center mt-3">
+                {% csrf_token %}
+                <button class="btn btn-danger" type="submit">Logout
+                  <i class="fa-solid fa-arrow-right-from-bracket" ></i>
+                </button>
+              </form>
+            </li>
           </ul>
         </li>
         <li class="nav-item mx-2">
@@ -109,10 +116,109 @@
   {% block main-content %}{% endblock main-content %}
 
 
-  <footer class="container-fluid   text-center p-2 mt-5" style="background-color: rgb(40, 35, 105); color:white">
+  {% comment %} <footer class="container-fluid   text-center p-2 mt-5" style="background-color: rgb(40, 35, 105); color:white">
     <i class="fa fa-copyright" aria-hidden="true"> </i>
     Dana Telecome
-  </footer>
+  </footer> {% endcomment %}
+
+
+<!-- Footer -->
+<footer class="text-center text-lg-start bg-body-tertiary text-muted py-2">
+
+  <!-- Section: Links  -->
+  <section class="">
+    <div class="container text-center text-md-start mt-3">
+      <!-- Grid row -->
+      <div class="row mt-3">
+        <!-- Grid column -->
+        <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
+          <!-- Content -->
+          <h6 class="text-uppercase fw-bold mb-4">
+            <i class="fas fa-gem me-3"></i>Dana Telecome Company
+          </h6>
+          <ul>
+            <li>Specializing in advanced IP camera solutions</li>
+            <li>Providing high-speed internet & reliable networking services</li>
+            <li>Committed to redefining security, connectivity & performance</li>
+          </ul>
+        </div>
+       
+        <!-- Grid column -->
+        <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4">
+
+          <h6 class="text-uppercase fw-bold mb-4">
+            Useful links
+          </h6>
+          <p>
+            <a href="#!" class="text-reset">Privacy Policy</a>
+          </p>
+          <p>
+            <a href="{% url 'contact' %}" class="text-reset">Contact US</a>
+          </p>
+          <p>
+            <a href="{% url 'about' %}" class="text-reset">About US</a>
+          </p>
+          <p>
+            <a href="#!" class="text-reset">Partnership ?</a>
+          </p>
+        </div>
+
+
+        <!-- Grid column -->
+        <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
+
+          <h6 class="text-uppercase fw-bold mb-4">Contact</h6>
+          <p><i class="fas fa-home me-3"></i> Uskudar - Istanbul - Turkey</p>
+          <p>
+            <i class="fas fa-envelope me-3"></i>
+            info@uskudar.com
+          </p>
+          <p><i class="fas fa-phone me-3"></i> + 90 234 567 88</p>
+          <p><i class="fas fa-print me-3"></i> + 90 234 567 89</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="d-flex justify-content-center p-1" style="">
+   
+    <div class=" d-flex justify-content-center">
+      <a href="" class="me-4 text-reset">
+        <i class="fab fa-facebook-f" style="font-size:2em"></i>
+      </a>
+    
+      <a href="" class="me-4 text-reset">
+        <i class="fab fa-google" style="font-size:2em"></i>
+      </a>
+      <a href="" class="me-4 text-reset">
+        <i class="fab fa-instagram" style="font-size:2em"></i>
+      </a>
+      <a href="" class="me-4 text-reset">
+        <i class="fab fa-linkedin" style="font-size:2em"></i>
+      </a>
+      <a href="" class="me-4 text-reset">
+        <i class="fab fa-github" style="font-size:2em"></i>
+      </a>
+    </div>
+  </section>
+
+  <!-- Copyright -->
+  <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.05);">
+    © 2024 Copyright:
+    <a class="text-reset fw-bold" href="https://google.com">Dana Telecome Company</a>
+  </div>
+  <!-- Copyright -->
+</footer>
+<!-- Footer -->
+
+
+
+
+
+
+
+
 
   <script>
     $(document).ready(function() {
