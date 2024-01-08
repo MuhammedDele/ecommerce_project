@@ -1,0 +1,150 @@
+{% extends "app/base.html" %}
+{%load static%}
+{%block title %}Home{% endblock title%}
+
+{% block banner-slider%}
+
+
+<div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <img src="{% static 'app/images/Banners/HomePageBanner1.png' %}" class="d-block w-100 img-fluid" style="height: 75vh" alt="...">
+      </div>
+      <div class="carousel-item">
+        <img src="{% static 'app/images/Banners/HomePageBanner2.png' %}" class="d-block w-100  img-fluid" style="height: 75vh" alt="...">
+      </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+{% endblock banner-slider %}
+
+{% block information%}
+{% comment %} <div class="container-fluid p-0">
+    <div class="row m-0 text-center p-5 border-bottom shadow" style="background-color: rgb(40, 35, 105); ">
+        <div class="col-12 align-self-center">
+            <h1 style="color: rgb(255, 242, 0)">Welcome to Dana Telecome store</h1>
+        </div>
+    </div>
+</div> {% endcomment %}
+<div class="spacer" style="height: 50px;"></div>
+<div class="text-center" >
+    <h1  > Why Dana Telecome ? </h1>
+</div>
+<div >
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+          
+            <div class="col-md-4 container text-center">
+                <i class="fas fa-award m-2" style="font-size: 7em; color: #00004e;"></i>
+                <h5 class="">12 Month Warranty</h5>
+              </div>
+          
+          
+            <div class="col-md-4 container text-center">
+            <i class="fa-solid fa-hand-holding-dollar m-2" style="font-size: 7em; color: #00004e;"></i>
+             <h5 class="">Best Price</h5>
+           </div>
+
+        
+          <div class="col-md-4 container text-center">
+            <i class="fa-solid fa-rocket m-2" style="font-size: 7em; color: #00004e;"></i>
+            <h5 class="">Fast Shipping</h5>
+          </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock information %}
+
+{% block main-content %}
+    <div class="container">
+        <br></br>
+        <div class="container">
+    <div class="row">
+        <div class="col-md-4 col-sm-4">
+            <div class="goodnessec buttermilk smbg mi-go wow fadeInUp" data-wow-duration="1s"
+                 data-wow-delay="0.6s">
+                <a href="{% url 'category' 'IC'%}" style="text-decoration: none;">
+                    <div class="goodnessseccont text-center">
+                        <img src="{% static 'app/images/cameras/se2-cameras-2019.png'%}" class="img-responsive center-block" alt="">
+                        <p class="mlkpro">IP Camera</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-4">
+            <div class="goodnessec buttermilk smbg mi-go wow fadeInUp" data-wow-duration="1s"
+                 data-wow-delay="0.6s">
+                <a href="{% url 'category' 'BC'%}" style="text-decoration: none;">
+                    <div class="goodnessseccont text-center">
+                        <img src="{% static 'app/images/cameras/bnc.png'%}" class="img-responsive center-block" alt="">
+                        <p class="mlkpro">BNC Camera</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-4">
+            <div class="goodnessec buttermilk smbg mi-go wow fadeInUp" data-wow-duration="1s"
+                 data-wow-delay="0.6s">
+                <a href="{% url 'category' 'WC'%}" style="text-decoration: none;">
+                    <div class="goodnessseccont text-center">
+                        <img src="{% static 'app/images/cameras/wireless.jpg'%}" class="img-responsive center-block" alt="">
+                        <p class="mlkpro">Wireless Camera</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-4 col-sm-4">
+            <div class="goodnessec buttermilk smbg mi-go wow fadeInUp" data-wow-duration="1s"
+                 data-wow-delay="0.6s">
+                <a href="{% url 'category' 'WI'%}" style="text-decoration: none;">
+                    <div class="goodnessseccont text-center">
+                        <img src="{% static 'app/images/cameras/wi-fi-5955829_1280.png'%}" class="img-responsive center-block" alt="">
+                        <p class="mlkpro">Wifi Internet</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-4">
+            <div class="goodnessec buttermilk smbg mi-go wow fadeInUp" data-wow-duration="1s"
+                 data-wow-delay="0.6s">
+                <a href="{% url 'category' 'AI'%}" style="text-decoration: none;">
+                    <div class="goodnessseccont text-center">
+                        <img src="{% static 'app/images/cameras/adsl.jpg'%}" class="img-responsive center-block" alt="">
+                        <p class="mlkpro">ADSL Internet</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-4">
+            <div class="goodnessec buttermilk smbg mi-go wow fadeInUp" data-wow-duration="1s"
+                 data-wow-delay="0.6s">
+                <a href="{% url 'category' 'VI'%}" style="text-decoration: none;">
+                    <div class="goodnessseccont text-center">
+                        <img src="{% static 'app/images/cameras/vdsl.jpeg'%}" class="img-responsive center-block" alt="">
+                        <p class="mlkpro">VDSL Internet</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+        <br></br>
+    </div>
+    <br></br>
+{% endblock main-content %}
