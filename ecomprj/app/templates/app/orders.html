@@ -25,7 +25,8 @@
                         <div class="card-body">
                             <h5 class="card-title">Product: {{ op.product.title }}</h5>
                             <p class="card-text">Quantity: {{ op.quantity }}</p>
-                            <p class="card-text">Price: {{ op.total_cost }}</p>
+                            <!-- Display total cost including shipping fees -->
+                            <p class="card-text">Total Cost (with Shipping): {{ op.total_cost_with_shipping }}</p>
                         </div>
                     </div>
                     <div class="col-md-3">

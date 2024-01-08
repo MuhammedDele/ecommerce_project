@@ -9,6 +9,7 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth.models import User
+from django.db.models import F, Sum
 
 # Create your views here.
 
@@ -189,17 +190,23 @@ def add_to_cart(request):
 def show_cart(request):
     user = request.user
     cart = Cart.objects.filter(user=user)
-    amount=0
+    
+    amount = 0
     for p in cart:
         value = p.quantity * p.product.discount_price
-        amount = amount + value
-    totalamount = amount + 10
-    totalitem=0
-    wishitem=0
+        amount += value
+    
+    totalitem = 0
+    wishitem = 0
     if request.user.is_authenticated:
         totalitem = len(Cart.objects.filter(user=request.user))  
-        wishitem = len(Whishlist.objects.filter(user=request.user))  
-    return render(request,'app/addcart.html',locals())
+        wishitem = len(Whishlist.objects.filter(user=request.user))
+    
+    shipping_fee = 10
+    totalamount = amount + shipping_fee if amount > 0 else 0
+    
+    return render(request, 'app/addcart.html', locals())
+
 @method_decorator(login_required,name='dispatch') 
 class checkout(View):
     def get(self,request):
@@ -278,34 +285,48 @@ def minus_cart(request):
 def remove_cart(request):
     if request.method == 'GET':
         prod_id = request.GET['prod_id']
-        c = Cart.objects.filter(product = prod_id,user=request.user).first()# apply multiple conditions
-        c.quantity+=1
-        c.delete()
+        c = Cart.objects.filter(product=prod_id, user=request.user).first()
+        quantity = 0
+
+        if c:
+            quantity = c.quantity  # Store the quantity before deleting
+            c.delete()
+
         user = request.user
         cart = Cart.objects.filter(user=user)
-        amount=0
-        for p in cart:
-            value = p.quantity * p.product.discount_price
-            amount = amount + value
-        totalamount = amount + 10 
-        data ={
-            'quantity':c.quantity,
-            'amount':amount,
-            'totalamount':totalamount
+        amount = cart.aggregate(total_amount=Sum(F('quantity') * F('product__discount_price')))['total_amount']
+        total_amount = amount + 10 if amount else 0  # Calculate total amount considering shipping fees
 
+        data = {
+            'quantity': quantity,
+            'amount': amount or 0,  # Set amount to 0 if it's None or 0
+            'totalamount': total_amount
         }
+
         return JsonResponse(data)
+
+    return JsonResponse({'error': 'Invalid request method.'})
     
 
 @login_required
 def orders(request):
-    totalitem=0
-    wishitem=0
+    totalitem = 0
+    wishitem = 0
     if request.user.is_authenticated:
         totalitem = len(Cart.objects.filter(user=request.user))
         wishitem = len(Whishlist.objects.filter(user=request.user))
+
     order_placed = OrderPlaced.objects.filter(user=request.user)
-    return render(request,'app/orders.html',locals())
+
+    # Calculate total cost including shipping fees for each order
+    for order in order_placed:
+        # Assuming shipping_fee is a fixed value for all orders
+        shipping_fee = 10  # You can modify this based on your logic
+
+        # Calculate total cost with shipping fees
+        order.total_cost_with_shipping = order.total_cost + shipping_fee
+
+    return render(request, 'app/orders.html', {'order_placed': order_placed, 'totalitem': totalitem, 'wishitem': wishitem})
 @login_required
 def plus_wishlist(request):
     if request.method == 'GET':
