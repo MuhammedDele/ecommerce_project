@@ -294,13 +294,13 @@ def remove_cart(request):
 
         user = request.user
         cart = Cart.objects.filter(user=user)
-        amount = cart.aggregate(total_amount=Sum(F('quantity') * F('product__discount_price')))['total_amount']
-        total_amount = amount + 10 if amount else 0  # Calculate total amount considering shipping fees
+        amount = cart.aggregate(totalamount=Sum(F('quantity') * F('product__discount_price')))['totalamount']
+        totalamount = amount + 10 if amount else 0  # Calculate total amount considering shipping fees
 
         data = {
             'quantity': quantity,
             'amount': amount or 0,  # Set amount to 0 if it's None or 0
-            'totalamount': total_amount
+            'totalamount': totalamount
         }
 
         return JsonResponse(data)
