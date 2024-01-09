@@ -54,7 +54,7 @@
                         </li>
                       </ul>
                       <div class="d-grid">
-                        <div>Total Amount: {{ totalamount }}</div>
+                        <span id="totalamount">Total Amount: {{ totalamount }}</span>
                         {% if totalamount > 0 %}
                             <a href="{% url 'checkout' %}" class="btn btn-primary">Place Order</a>
                         {% else %}

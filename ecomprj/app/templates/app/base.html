@@ -14,6 +14,10 @@
     <link rel="stylesheet" href="{% static 'app/css/all.min.css' %}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="{% static 'mdb/css/mdb.min.css' %}" rel="stylesheet">
+    <link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'fontawesomefree/css/brands.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
+
 
   </head>
     <title>Dana Telecome | {% block title %}{% endblock title %}</title>
@@ -23,8 +27,8 @@
     <div class="container-fluid">
 
       <a class="navbar-brand" href="/">
-          <h3 style="color:white">Dana Telecome</h3>
-        {% comment %} <img src="{% static 'app/images/logo-danatelecom.png' %}" alt=""  style="height: 50px; object-fit: contain;"> {% endcomment %}
+          {% comment %} <h3 style="color:white">Dana Telecome</h3> {% endcomment %}
+        <img src="{% static 'app/images/logo-1.png' %}" alt=""  style="height: 50px; object-fit: contain;">
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -73,14 +77,19 @@
             </li>
           </ul>
         </li>
-        <li class="nav-item mx-2">
-          <a href="{% url 'showcart' %}" class="nav-link text-white">
-              {% if totalitem > 0 %}
-              <span class="badge bg-danger">{{ totalitem }}</span>
-              {% endif %}
-              Cart
-          </a>
-      </li>
+          <li class="nav-item mx-2">
+            <a href="{% url 'showcart' %}" class="nav-link text-white">
+                {% if totalitem > 0 %}
+                <span class="fa-stack">
+                  <span class="fa-solid fa-cart-shopping fa-2xl "></span>
+                  <strong class="fa-stack-1x" style="color: red;">
+                    {{ totalitem }}
+                  </strong>
+                </span>
+                {% endif %}
+                Cart
+            </a>
+        </li>
       <li class="nav-item mx-2">
         <a href="{% url 'showwishlist' %}" class="nav-link text-white">
             <span class="heart-icon">

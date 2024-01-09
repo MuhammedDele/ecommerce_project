@@ -284,7 +284,7 @@ def minus_cart(request):
 @login_required    
 def remove_cart(request):
     if request.method == 'GET':
-        prod_id = request.GET['prod_id']
+        prod_id = request.GET.get('prod_id')
         c = Cart.objects.filter(product=prod_id, user=request.user).first()
         quantity = 0
 
